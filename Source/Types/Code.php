@@ -2,29 +2,29 @@
 
 namespace Source\Types;
 
-use Source\Classes\LineSplitter;
-use Source\Classes\CustomizedDriver;
-use Source\Interfaces\DriverInterface;
+use Source\Classes\RecordSplitter;
+use Source\Classes\BasicRecordType;
+use Source\Interfaces\RecordTypeInterface;
 
-class Code implements DriverInterface
+class Code implements RecordTypeInterface
 {
-    use CustomizedDriver;
+    use BasicRecordType;
 
     public static function getRegex(): string 
     {
         return "/^10101/";
     }
 
-    public static function getSplitter(): LineSplitter
+    public static function getSplitter(): RecordSplitter
     {
-        return (new LineSplitter())
-        ->with("Type", 3)
+        return (new RecordSplitter())
+        ->with("Type d'enregistrement", 3)
         ->with("Rubrique", 2)
-        ->with("Sequence", 2)
+        ->with("Séquence", 2)
         ->with("Code", 13)
-        ->with("Libelle", 80)
-        ->with("NumeroRefMedical", 5, 5)
-        ->with("Inutilise", 3)
+        ->with("Libellé réduit", 80)
+        ->with("Numéros de référence médicale", 5, 5)
+        ->with("Inutilisé", 3)
         ;
     }
 }

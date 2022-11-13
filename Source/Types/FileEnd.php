@@ -2,28 +2,28 @@
 
 namespace Source\Types;
 
-use Source\Classes\LineSplitter;
-use Source\Classes\CustomizedDriver;
-use Source\Interfaces\DriverInterface;
+use Source\Classes\RecordSplitter;
+use Source\Classes\BasicRecordType;
+use Source\Interfaces\RecordTypeInterface;
 
-class FileEnd implements DriverInterface
+class FileEnd implements RecordTypeInterface
 {
-    use CustomizedDriver;
+    use BasicRecordType;
 
     public static function getRegex(): string 
     {
         return "/^19901/";
     }
 
-    public static function getSplitter(): LineSplitter
+    public static function getSplitter(): RecordSplitter
     {
-        return (new LineSplitter())
-        ->with("Type", 3)
-        ->with("NOEMIE", 49)
-        ->with("NombreTotal", 8)
-        ->with("NombreCodes", 6)
-        ->with("Sceau", 10)
-        ->with("Inutilise", 52)
+        return (new RecordSplitter())
+        ->with("Type d'enregistrement", 3)
+        ->with("Informations NOEMIE", 49)
+        ->with("Nombre total d'enregistrements", 8)
+        ->with("Nombre de codes référence LPP", 6)
+        ->with("Sceau du fichier", 10)
+        ->with("Inutilisé", 52)
         ;
     }
 }

@@ -2,38 +2,38 @@
 
 namespace Source\Types;
 
-use Source\Classes\LineSplitter;
-use Source\Classes\CustomizedDriver;
-use Source\Interfaces\DriverInterface;
+use Source\Classes\RecordSplitter;
+use Source\Classes\BasicRecordType;
+use Source\Interfaces\RecordTypeInterface;
 
-class FileStart implements DriverInterface
+class FileStart implements RecordTypeInterface
 {
-    use CustomizedDriver;
+    use BasicRecordType;
 
     public static function getRegex(): string 
     {
         return "/^000/";
     }
 
-    public static function getSplitter(): LineSplitter
+    public static function getSplitter(): RecordSplitter
     {
-        return (new LineSplitter())
-        ->with("TypeEnregistrement", 3)
-        ->with("TypeEmetteur", 2)
-        ->with("NumeroEmetteur", 14)
-        ->with("ProgrammeEmetteur", 6)
-        ->with("TypeDestinataire", 2)
-        ->with("NumeroDestinataire", 14)
-        ->with("ProgrammeDestinataire", 6)
-        ->with("TypeEchange", 2)
-        ->with("IdentifiantFichier", 3)
-        ->with("DateCreation", 6)
-        ->with("NOEMIE", 24)
-        ->with("NumeroChronologie", 5)
-        ->with("TypeFichier", 1)
-        ->with("UniteMonetaire", 1)
-        ->with("NumeroVersion", 4)
-        ->with("Inutilise", 35)
+        return (new RecordSplitter())
+        ->with("Type d'enregistrement", 3)
+        ->with("Type d'émetteur", 2)
+        ->with("Numéro émetteur", 14)
+        ->with("Programme émetteur", 6)
+        ->with("Type de destinataire", 2)
+        ->with("Numéro de destinataire", 14)
+        ->with("Programme destinataire", 6)
+        ->with("Application - type d'échange", 2)
+        ->with("Identifiant du fichier", 3)
+        ->with("Date de création du fichier", 6)
+        ->with("Informations NOEMIE", 24)
+        ->with("Numéro chronologie", 5)
+        ->with("Type de fichier", 1)
+        ->with("Unité monétaire", 1)
+        ->with("Numéro de version de norme", 4)
+        ->with("Zone Inutilisée", 35)
         ;
     }
 }

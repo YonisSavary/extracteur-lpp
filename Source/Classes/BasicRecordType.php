@@ -2,17 +2,17 @@
 
 namespace Source\Classes;
 
-use Source\Classes\LineSplitter;
+use Source\Classes\RecordSplitter;
 use Source\Interfaces\SQLWriterInterface;
 
-trait CustomizedDriver
+trait BasicRecordType
 {
-    /** @var LineSplitter */
+    /** @var RecordSplitter */
     static $splitter = false;
 
-    public static function getSplitter(): LineSplitter
+    public static function getSplitter(): RecordSplitter
     {
-        return new LineSplitter;
+        return new RecordSplitter;
     }
 
     public static function getRegex(): string 
@@ -29,6 +29,8 @@ trait CustomizedDriver
             return;
 
         $object = self::$splitter->split($line);
+
+        $writer->write((array)$object, self::class);
 
         return $object;
     }

@@ -2,27 +2,27 @@
 
 namespace Source\Types;
 
-use Source\Classes\LineSplitter;
-use Source\Classes\CustomizedDriver;
-use Source\Interfaces\DriverInterface;
+use Source\Classes\RecordSplitter;
+use Source\Classes\BasicRecordType;
+use Source\Interfaces\RecordTypeInterface;
 
-class Compatibility implements DriverInterface
+class Compatibility implements RecordTypeInterface
 {
-    use CustomizedDriver;
+    use BasicRecordType;
 
     public static function getRegex(): string 
     {
         return "/^13001/";
     }
 
-    public static function getSplitter(): LineSplitter
+    public static function getSplitter(): RecordSplitter
     {
-        return (new LineSplitter())
-        ->with("Type", 3)
+        return (new RecordSplitter())
+        ->with("Type d'enregistrement", 3)
         ->with("Rubrique", 2)
-        ->with("Sequence", 2)
-        ->with("Reference", 13, 9)
-        ->with("Inutilise", 4)
+        ->with("Séquence", 2)
+        ->with("Code référence LPP compatible", 13, 9)
+        ->with("Inutilisé", 4)
         ;
     }
 }

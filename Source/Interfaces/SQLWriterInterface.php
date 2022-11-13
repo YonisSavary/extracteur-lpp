@@ -6,5 +6,5 @@ use stdClass;
 
 interface SQLWriterInterface
 {
-    public function write(stdClass $object, string $class);
+    public function write(array $object, string $class);
 }

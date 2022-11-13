@@ -2,7 +2,7 @@
 
 namespace Source\Interfaces;
 
-interface DriverInterface
+interface RecordTypeInterface
 {
     public static function handle(string $line, SQLWriterInterface &$writer);
 }

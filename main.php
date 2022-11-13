@@ -1,33 +1,31 @@
 <?php
 
 use Source\Classes\FileReader;
-use SQL\BasicSQLWriter;
+use Source\Classes\Utils;
+use SQL\Basic\BasicSQLWriter;
 
 require_once "./Source/Loader.php";
 
 if (!is_dir("./tmp"))
     mkdir("./tmp");
 
-if (!is_file("./tmp/LPPTOT702"))
+$sourceFile = Utils::ensureSourceFile();
+
+
+$options = getopt("", ["writer::"]);
+
+
+$class = BasicSQLWriter::class;
+if ($customWriter = $options["writer"]??false)
 {
-    echo "Downloading File...";
-    copy("http://www.codage.ext.cnamts.fr/f_mediam/fo/tips/LPPTOT702.zip", "./tmp/LPPTOT702.zip");
-
-    if (!is_file("./tmp/LPPTOT702.zip"))
-    {
-        echo "Cannot download file !\n";
-        die;
-    }
-    
-    echo "Done\n";
-
-    $archive = new ZipArchive();
-    $archive->open("./tmp/LPPTOT702.zip");
-    $archive->extractTo("./tmp/");
-    $archive->close();
-    unlink("./tmp/LPPTOT702.zip");
+    if (!class_exists($customWriter))
+        die("Custom writer class [$customWriter] does not exists !");
+    echo "Detected writer param ! Using : $customWriter\n";
+    $class = $customWriter;
 }
+$writer = new $class();
 
-$writer = new BasicSQLWriter();
 
-$reader = new FileReader("./tmp/LPPTOT702", $writer);
+$reader = new FileReader($sourceFile, $writer);
+
+return 0;

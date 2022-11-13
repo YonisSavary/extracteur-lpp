@@ -2,27 +2,27 @@
 
 namespace Source\Types;
 
-use Source\Classes\LineSplitter;
-use Source\Classes\CustomizedDriver;
-use Source\Interfaces\DriverInterface;
+use Source\Classes\RecordSplitter;
+use Source\Classes\BasicRecordType;
+use Source\Interfaces\RecordTypeInterface;
 
-class CodeEnd implements DriverInterface
+class CodeEnd implements RecordTypeInterface
 {
-    use CustomizedDriver;
+    use BasicRecordType;
 
     public static function getRegex(): string 
     {
         return "/^19901/";
     }
 
-    public static function getSplitter(): LineSplitter
+    public static function getSplitter(): RecordSplitter
     {
-        return (new LineSplitter())
-        ->with("Type", 3)
-        ->with("Sequence", 2)
+        return (new RecordSplitter())
+        ->with("Type d'enregistrement", 3)
+        ->with("Séquence", 2)
         ->with("Rubrique", 2)
-        ->with("NombreEnregistrements", 5)
-        ->with("Inutilise", 116)
+        ->with("Nombre d'enregistrements", 5)
+        ->with("Inutilisé", 116)
         ;
     }
 }
