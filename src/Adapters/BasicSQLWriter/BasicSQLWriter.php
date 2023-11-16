@@ -1,64 +1,60 @@
-<?php 
+<?php
 
-namespace SQL\Basic;
+namespace YonisSavary\ExtracteurLPP\Adapters\BasicSQLWriter;
 
 use Exception;
-use stdClass;
-use Source\Interfaces\SQLWriterInterface;
-use Source\Types\Code;
-use Source\Types\CodeDescription;
-use Source\Types\CodeEnd;
-use Source\Types\Compatibility;
-use Source\Types\CodePrice;
-use Source\Types\Incompatibility;
+use YonisSavary\ExtracteurLPP\Classes\Utils;
+use YonisSavary\ExtracteurLPP\Interfaces\DataAdapterInterface;
+use YonisSavary\ExtracteurLPP\RecordTypes\Code;
+use YonisSavary\ExtracteurLPP\RecordTypes\CodeDescription;
+use YonisSavary\ExtracteurLPP\RecordTypes\CodeEnd;
+use YonisSavary\ExtracteurLPP\RecordTypes\Compatibility;
+use YonisSavary\ExtracteurLPP\RecordTypes\CodePrice;
+use YonisSavary\ExtracteurLPP\RecordTypes\Incompatibility;
 
-class BasicSQLWriter implements SQLWriterInterface
+class BasicSQLWriter implements DataAdapterInterface
 {
-    const PATH = "./tmp/out.sql";
-    const VERBOSE_PATH = "./tmp/verbose.dump";
-
-    const DO_VERBOSE = false;
-
-
     protected $lasts = [];
 
+    protected string $path;
     protected $writer = false;
-    protected $verbose = false;
 
     protected $endContent = [];
 
 
-    public function __construct()
+    public function __construct(string $outPath)
     {
-        echo "[writer] Initializing SQL Writer\n";
+        $this->path = $outPath . "/BasicSQLWriter.sql";
 
-        if (!$this->writer = fopen(self::PATH, "w"))
-            throw new Exception("[".self::class."] cannot write in ".self::PATH);
+        Utils::printLine("[writer] Initializing SQL Writer");
+
+        if (!$this->writer = fopen($this->path, "w"))
+            throw new Exception("[".self::class."] cannot write in ".$this->path);
 
         fwrite($this->writer, "-- Basic SQL Writer\n");
         fwrite($this->writer, "-- Ce schéma contient les informations essentielles sur les différents codes LPP\n");
         fwrite($this->writer, "-- Retrouvez le schema SQL dans ". dirname(__FILE__) . DIRECTORY_SEPARATOR . "SCHEMA.sql\n");
         fwrite($this->writer, "-- ansi que les (in)compatibilitées à la fin de ce fichier\n\n");
-
-        if (self::DO_VERBOSE)
-            $this->verbose = fopen(self::VERBOSE_PATH, "w");
+        fwrite($this->writer, file_get_contents(__DIR__ . "/SCHEMA.sql"));
     }
 
+    public function getPath(): string
+    {
+        return $this->path;
+    }
 
     public function __destruct()
     {
         $used = 0;
         foreach ($this->endContent as $value)
             $used += strlen($value);
-        echo "[writer] Memory for end-content : ".($used/1024)." ko\n";
-        echo "[writer] Output size : ~". round(ftell($this->writer)/(1024*1024), 2)." Mo\n";
+
+        Utils::printLine("[writer] Memory for end-content : ".($used/1024)." ko");
+        Utils::printLine("[writer] Output size : ~". round(ftell($this->writer)/(1024*1024), 2)." Mo");
 
         fwrite($this->writer, join("\n", $this->endContent)."\n");
         fclose($this->writer);
-        if ($this->verbose) 
-            fclose($this->verbose);
     }
-
 
     public function write(array $object, string $class)
     {
@@ -72,15 +68,7 @@ class BasicSQLWriter implements SQLWriterInterface
         }
 
         $this->lasts[$class] = $object;
-
-        if ($this->verbose)
-        {
-            fwrite($this->verbose, "\n$class\n");
-            fwrite($this->verbose, print_r($object, true));
-            fwrite($this->verbose, "\n------------------------\n");
-        }
     }
-
 
     public function writeSQL(string $query, array $context, bool $endMode=false)
     {
@@ -106,7 +94,7 @@ class BasicSQLWriter implements SQLWriterInterface
     }
 
 
-    public function writeCodeEnd($_)
+    public function writeCodeEnd()
     {
         fwrite($this->writer, "-- FIN DU CODE ". $this->lasts[Code::class]["Code"] . "\n\n");
     }
@@ -149,7 +137,7 @@ class BasicSQLWriter implements SQLWriterInterface
             $object["Quantité maximale"],
             $object["Montant maximal"],
             $object["Prix unitaire réglementé"]
-        ]); 
+        ]);
     }
 
 
@@ -192,7 +180,7 @@ class BasicSQLWriter implements SQLWriterInterface
         }
     }
 
-    
+
     public function writeIncompatibility($object)
     {
         $parent = $this->lasts[Code::class]["Code"];
@@ -200,7 +188,7 @@ class BasicSQLWriter implements SQLWriterInterface
         {
             if ($code == "")
                 continue;
-                
+
             $this->writeSQL(
                 "INSERT IGNORE INTO lpp_incompatibilite (
                     code,

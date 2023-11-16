@@ -1,22 +1,22 @@
-<?php 
+<?php
 
-namespace Source\Classes;
+namespace YonisSavary\ExtracteurLPP\Classes;
 
 use stdClass;
 
 class RecordSplitter
 {
-    protected $parts = [];
+    /** @var array<RecordSplitterPart> $parts */
+    protected array $parts = [];
 
     public function with(string $name, int $length, int $occurences=1, callable $mapper=null): self
     {
-        $this->parts[] = (object)[
-            "name"=> $name,
-            "length"=> $length,
-            "occurences"=> $occurences,
-            "isArray" => $occurences > 1,
-            "mapper" => $mapper
-        ];
+        $this->parts[] = new RecordSplitterPart(
+            $name,
+            $length,
+            $occurences,
+            $mapper
+        );
 
         return $this;
     }
@@ -41,7 +41,10 @@ class RecordSplitter
             if ($part->mapper !== null)
                 $values = array_map($part->mapper, $values);
 
-            $object->$name = ($part->isArray == true)? $values : $values[0];
+            $object->$name = $part->isArray ?
+                $values :
+                $values[0]
+            ;
         }
 
         return $object;

@@ -1,17 +1,17 @@
-<?php 
+<?php
 
-namespace Source\Types;
+namespace YonisSavary\ExtracteurLPP\RecordTypes;
 
-use Source\Classes\RecordSplitter;
-use Source\Classes\BasicRecordType;
-use Source\Classes\Utils;
-use Source\Interfaces\RecordTypeInterface;
+use YonisSavary\ExtracteurLPP\Classes\RecordSplitter;
+use YonisSavary\ExtracteurLPP\Classes\BasicRecordType;
+use YonisSavary\ExtracteurLPP\Classes\Utils;
+use YonisSavary\ExtracteurLPP\Interfaces\RecordTypeInterface;
 
 class CodePrice implements RecordTypeInterface
 {
     use BasicRecordType;
 
-    public static function getRegex(): string 
+    public static function getRegex(): string
     {
         return "/^11001/";
     }

@@ -1,0 +1,41 @@
+<?php
+
+use YonisSavary\ExtracteurLPP\Classes\FileReader;
+use YonisSavary\ExtracteurLPP\Adapters\BasicSQLWriter\BasicSQLWriter;
+use YonisSavary\ExtracteurLPP\Classes\Utils;
+use YonisSavary\ExtracteurLPP\Interfaces\DataAdapterInterface;
+
+require_once __DIR__ . "/../vendor/autoload.php";
+
+
+
+$outDirectory = __DIR__ . "/../out";
+if (!is_dir($outDirectory))
+    mkdir($outDirectory);
+
+$options = getopt("", ["writer::", "input:"]);
+
+if (!($sourceFile = $options["input"] ?? false))
+    die("A file path is needed !\n");
+if (!is_file($sourceFile))
+    die("[$sourceFile] is not a file\n");
+
+
+$class = BasicSQLWriter::class;
+if ($customWriter = $options["writer"] ?? false)
+{
+    if (!class_exists($customWriter))
+        die("Custom writer class [$customWriter] does not exists !\n");
+
+    Utils::printLine("Detected writer param ! Using : $customWriter");
+
+    $class = $customWriter;
+}
+/** @var DataAdapterInterface $writer */
+$writer = new $class($outDirectory);
+
+$reader = FileReader::readNXFile($sourceFile, $writer);
+
+Utils::printLine("Written file : " . $writer->getPath());
+
+return 0;

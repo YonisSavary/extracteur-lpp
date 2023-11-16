@@ -1,16 +1,16 @@
-<?php 
+<?php
 
-namespace Source\Types;
+namespace YonisSavary\ExtracteurLPP\RecordTypes;
 
-use Source\Classes\RecordSplitter;
-use Source\Classes\BasicRecordType;
-use Source\Interfaces\RecordTypeInterface;
+use YonisSavary\ExtracteurLPP\Classes\RecordSplitter;
+use YonisSavary\ExtracteurLPP\Classes\BasicRecordType;
+use YonisSavary\ExtracteurLPP\Interfaces\RecordTypeInterface;
 
 class FileEnd implements RecordTypeInterface
 {
     use BasicRecordType;
 
-    public static function getRegex(): string 
+    public static function getRegex(): string
     {
         return "/^19901/";
     }

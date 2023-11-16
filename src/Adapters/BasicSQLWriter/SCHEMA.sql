@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS lpp_incompatibilite;
+DROP TABLE IF EXISTS lpp_compatibilite;
+DROP TABLE IF EXISTS lpp_code_prix;
+DROP TABLE IF EXISTS lpp_code;
+
+
 CREATE TABLE lpp_code (
     code VARCHAR(13) PRIMARY KEY,
     libelle VARCHAR(80) NOT NULL,
@@ -7,7 +13,6 @@ CREATE TABLE lpp_code (
     type_prestation CHAR,
     indication_medicale BOOLEAN
 );
-
 
 CREATE TABLE lpp_code_prix (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -19,7 +24,7 @@ CREATE TABLE lpp_code_prix (
     nature_prestation VARCHAR(3) NULL,
     entente_prealable BOOLEAN,
     date_arrete DATE,
-    date_publication DATE, 
+    date_publication DATE,
 
     indication_pu_devis BOOLEAN,
     tarif_reference DECIMAL(8,2),

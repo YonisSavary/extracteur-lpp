@@ -1,0 +1,35 @@
+<?php
+
+$url = "http://www.codage.ext.cnamts.fr/codif/tips//telecharge/index_tele.php?p_site=AMELI";
+$html = file_get_contents($url);
+
+echo "Downloading Link page from $url\n";
+
+if (!preg_match("/href=['\"](.+LPPTOT\d+\.zip)/i", $html, $matches))
+    die("No valid link found, please visit $url to manually download the file");
+
+
+$distZipPath = $matches[1];
+if (!str_starts_with($distZipPath, "http"));
+    $distZipPath = "http://www.codage.ext.cnamts.fr/$distZipPath";
+
+echo "Downloading ZIP from $distZipPath\n";
+
+$tmpPath = __DIR__ . "/../tmp";
+if (!is_dir($tmpPath))
+    mkdir($tmpPath, recursive: true);
+
+$tmpZipPath = "$tmpPath/".uniqid("#~");
+file_put_contents(
+    $tmpZipPath,
+    file_get_contents($distZipPath)
+);
+
+$zip = new ZipArchive();
+$zip->open($tmpZipPath);
+$zip->extractTo(__DIR__ . "/../");
+$zip->close();
+
+unlink($tmpZipPath);
+
+echo "Extracted file.\n";
